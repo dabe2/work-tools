@@ -97,10 +97,10 @@ for cardId in exportCardIds:
 
 asset_file_output_string = asset_file_output_string[:-1]
 action_skill_output_string = action_skill_output_string[:-2]
-print "-----Result-----"
-print asset_file_output_string
-print "----------------"
-print action_skill_output_string
+#print asset_file_output_string
+#print action_skill_output_string
+
+print asset_file_output_string + "|" + action_skill_output_string
 
 
 
