@@ -12,8 +12,7 @@ if len(sys.argv) <= 1:
 
 gc = google_drive_authenticate.authenticate_google_docs()
 
-exportCardIds = sys.argv[-1].split(',')
-print exportCardIds
+exportCardIds = sys.argv[1:]
 
 #Format: Icon and Prefab
 thumbnail_file_format="Card/1_bust/card_{0}_1.png"#./WcatUnity/Assets/App/ExternalResources/Card/1_bust/card_20400510_1.png
