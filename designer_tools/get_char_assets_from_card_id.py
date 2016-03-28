@@ -20,6 +20,7 @@ card_full_format="Card/2_full/card_{0}_2.png"#./WcatUnity/Assets/App/ExternalRes
 card_extra1_format="Card/0_icon/card_{0}_0_m.png"
 card_extra2_format="Card/0_icon/card_{0}_0.png"
 card_prefab_file_format="Character/Prefabs/Player/ply_{0}.prefab"#./WcatUnity/Assets/App/ExternalResources/Character/Prefabs/Player/ply_20601430.prefab
+card_voice_file_format="Sound/Voice/Player/{cId}/{sId:02d}.wav"
 asset_file_output_string=''#Card/1_bust/card_20400510_1.png,Character/Prefabs/Player/ply_20601430.prefab
 
 #Format: ActionSkill animation and ActionSkill effect
@@ -55,7 +56,9 @@ allatkId = AttackMasterSheet.col_values(AttackMasterHeaders.index("atkId") + 1)
 
 #Helper Functions.
 def buildDirectFromCardId(sCardId, asset_file_output_string):
-    asset_file_output_string += thumbnail_file_format.format(sCardId) + "," + card_full_format.format(sCardId) + "," + card_prefab_file_format.format(sCardId) + "," + card_extra1_format.format(sCardId) + "," + card_extra2_format.format(sCardId) + ","
+    voiceFiles = lambda x:card_voice_file_format.format(cId=sCardId, sId=x)
+    voiceFilesString =','.join(map(voiceFiles, range(1,32)))
+    asset_file_output_string += thumbnail_file_format.format(sCardId) + "," + card_full_format.format(sCardId) + "," + card_prefab_file_format.format(sCardId) + "," + card_extra1_format.format(sCardId) + "," + card_extra2_format.format(sCardId) + "," + voiceFilesString + ","
     return asset_file_output_string
 
 def buildAnimation(actionSkill, asset_file_output_string):

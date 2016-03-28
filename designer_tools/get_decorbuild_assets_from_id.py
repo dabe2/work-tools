@@ -12,8 +12,7 @@ if len(sys.argv) <= 1:
 
 gc = google_drive_authenticate.authenticate_google_docs()
 
-exportBuildIds = sys.argv[-1].split(',')
-print exportBuildIds
+exportBuildIds = sys.argv[1:]
 
 #Format Building:
 building_thumbnail_file_format="Building/ThumbnailTextures/{0}.png"
