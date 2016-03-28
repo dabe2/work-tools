@@ -17,6 +17,8 @@ exportCardIds = sys.argv[1:]
 #Format: Icon and Prefab
 thumbnail_file_format="Card/1_bust/card_{0}_1.png"#./WcatUnity/Assets/App/ExternalResources/Card/1_bust/card_20400510_1.png
 card_full_format="Card/2_full/card_{0}_2.png"#./WcatUnity/Assets/App/ExternalResources/Card/2_full/card_20101610_2.png
+card_extra1_format="Card/0_icon/card_{0}_0_m.png"
+card_extra2_format="Card/0_icon/card_{0}_0.png"
 card_prefab_file_format="Character/Prefabs/Player/ply_{0}.prefab"#./WcatUnity/Assets/App/ExternalResources/Character/Prefabs/Player/ply_20601430.prefab
 asset_file_output_string=''#Card/1_bust/card_20400510_1.png,Character/Prefabs/Player/ply_20601430.prefab
 
@@ -53,7 +55,7 @@ allatkId = AttackMasterSheet.col_values(AttackMasterHeaders.index("atkId") + 1)
 
 #Helper Functions.
 def buildDirectFromCardId(sCardId, asset_file_output_string):
-    asset_file_output_string += thumbnail_file_format.format(sCardId) + "," + card_full_format.format(sCardId) + "," + card_prefab_file_format.format(sCardId) + ","
+    asset_file_output_string += thumbnail_file_format.format(sCardId) + "," + card_full_format.format(sCardId) + "," + card_prefab_file_format.format(sCardId) + "," + card_extra1_format.format(sCardId) + "," + card_extra2_format.format(sCardId) + ","
     return asset_file_output_string
 
 def buildAnimation(actionSkill, asset_file_output_string):
