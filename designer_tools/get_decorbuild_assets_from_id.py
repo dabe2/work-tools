@@ -64,4 +64,5 @@ for buildIds in exportBuildIds:
 
         sheetIterator = sheetIterator + 1
 
+asset_file_output_string = asset_file_output_string[:-1]
 print asset_file_output_string
