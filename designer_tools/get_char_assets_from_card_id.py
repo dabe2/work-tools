@@ -80,6 +80,17 @@ def buildActId(atkId, action_skill_output_string):
     action_skill_output_string += action_skill_file_format.format(AttackMasterSheet.cell(rowNumber, colNumber).value) + ", "
     return action_skill_output_string
 
+def buildExtraAnim(actionSKillId, asset_file_output_string):
+    rowNumber = ActionSkillId.index(actionSKillId) + 1
+    colNumber = ActionSkillMasterHeaders.index("atkId1") + 1
+
+    rowNumber1 = allatkId.index(ActionSkillMasterSheet.cell(rowNumber, colNumber).value) + 1
+    colNumber1 = AttackMasterHeaders.index("actId") + 1
+    test = int(float(AttackMasterSheet.cell(rowNumber1, colNumber1).value[7:]))
+    asset_file_output_string += action_skill_id_format.format(wId=test) + ","
+    return asset_file_output_string
+
+
 #Argument loop.
 for cardId in exportCardIds:
     asset_file_output_string = buildDirectFromCardId(cardId, asset_file_output_string)
@@ -94,6 +105,8 @@ for cardId in exportCardIds:
     actionSkill2 = CardMasterSheet.cell(rowNumber, colNumber2).value
     asset_file_output_string = buildAnimation(actionSkill2, asset_file_output_string)
 
+    asset_file_output_string = buildExtraAnim(actionSkill1, asset_file_output_string)
+    asset_file_output_string = buildExtraAnim(actionSkill2, asset_file_output_string)
 
     action_skill_output_string = linkToActId(actionSkill1, action_skill_output_string)
     action_skill_output_string = linkToActId(actionSkill2, action_skill_output_string)
