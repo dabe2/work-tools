@@ -61,11 +61,6 @@ def buildDirectFromCardId(sCardId, asset_file_output_string):
     asset_file_output_string += thumbnail_file_format.format(sCardId) + "," + card_full_format.format(sCardId) + "," + card_prefab_file_format.format(sCardId) + "," + card_extra1_format.format(sCardId) + "," + card_extra2_format.format(sCardId) + "," + voiceFilesString + ","
     return asset_file_output_string
 
-def buildAnimation(actionSkill, asset_file_output_string):
-    intActionSkill = int(float(actionSkill))
-    asset_file_output_string += action_skill_id_format.format(wId=intActionSkill) + ","
-    return asset_file_output_string
-
 
 def linkToActId(sActionSkillId, action_skill_output_string):
     rowNumber = ActionSkillId.index(sActionSkillId) + 1
@@ -101,9 +96,9 @@ for cardId in exportCardIds:
     colNumber1 = CardMasterHeaders.index("actionSkillId1") + 1
     colNumber2 = CardMasterHeaders.index("actionSkillId2") + 1
     actionSkill1 = CardMasterSheet.cell(rowNumber, colNumber1).value
-    asset_file_output_string = buildAnimation(actionSkill1, asset_file_output_string)
+    #asset_file_output_string = buildAnimation(actionSkill1, asset_file_output_string)
     actionSkill2 = CardMasterSheet.cell(rowNumber, colNumber2).value
-    asset_file_output_string = buildAnimation(actionSkill2, asset_file_output_string)
+    #asset_file_output_string = buildAnimation(actionSkill2, asset_file_output_string)
 
     asset_file_output_string = buildExtraAnim(actionSkill1, asset_file_output_string)
     asset_file_output_string = buildExtraAnim(actionSkill2, asset_file_output_string)
