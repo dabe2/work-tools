@@ -6,6 +6,7 @@ character (prefab,icon) and their associated action skill to the master branch.
 import google_drive_authenticate
 import gspread
 import sys
+import os
 
 if len(sys.argv) <= 1:
     sys.exit(1)
@@ -14,13 +15,13 @@ gc = google_drive_authenticate.authenticate_google_docs()
 
 exportCardIds = sys.argv[1:]
 
-#Format: Icon and Prefab
+#Format: Built directly from the Card ID
 thumbnail_file_format="Card/1_bust/card_{0}_1.png"#./WcatUnity/Assets/App/ExternalResources/Card/1_bust/card_20400510_1.png
 card_full_format="Card/2_full/card_{0}_2.png"#./WcatUnity/Assets/App/ExternalResources/Card/2_full/card_20101610_2.png
 card_extra1_format="Card/0_icon/card_{0}_0_m.png"
 card_extra2_format="Card/0_icon/card_{0}_0.png"
 card_prefab_file_format="Character/Prefabs/Player/ply_{0}.prefab"#./WcatUnity/Assets/App/ExternalResources/Character/Prefabs/Player/ply_20601430.prefab
-card_voice_file_format="Sound/Voice/Player/{cId}/{sId:02d}.wav"
+card_voice_file_format="Sound/Voice/Player/{cId}/{sId}"
 asset_file_output_string=''#Card/1_bust/card_20400510_1.png,Character/Prefabs/Player/ply_20601430.prefab
 
 #Format: ActionSkill animation and ActionSkill effect
@@ -56,10 +57,28 @@ allatkId = AttackMasterSheet.col_values(AttackMasterHeaders.index("atkId") + 1)
 
 #Helper Functions.
 def buildDirectFromCardId(sCardId, asset_file_output_string):
-    voiceFiles = lambda x:card_voice_file_format.format(cId=sCardId, sId=x)
-    voiceFilesString =','.join(map(voiceFiles, range(1,32)))
-    asset_file_output_string += thumbnail_file_format.format(sCardId) + "," + card_full_format.format(sCardId) + "," + card_prefab_file_format.format(sCardId) + "," + card_extra1_format.format(sCardId) + "," + card_extra2_format.format(sCardId) + "," + voiceFilesString + ","
+    #voiceFiles = lambda x:card_voice_file_format.format(cId=sCardId, sId=x)
+    #voiceFilesString =','.join(map(voiceFiles, range(1,32)))
+    soundFiles = findSoundFiles(sCardId)
+    asset_file_output_string += thumbnail_file_format.format(sCardId) + "," + card_full_format.format(sCardId) + "," + card_prefab_file_format.format(sCardId) + "," + card_extra1_format.format(sCardId) + "," + card_extra2_format.format(sCardId) + "," + soundFiles + ","
     return asset_file_output_string
+
+
+def findSoundFiles(sCardId):
+    completeSoundFileString = ""
+    #/Users/coloplni/WORK/wcatus/Tools/Jenkins/master_data_tools
+    pwd = os.popen("pwd").read()
+    rootPWD = pwd[:-31]
+    os.chdir(rootPWD)
+    os.chdir("./WcatUnity/Assets/App/ExternalResources/Sound/Voice/Player/" + sCardId)
+    terminalOutput = os.popen("ls *.wav").read()
+    terminalOutputArray = terminalOutput.split()
+    for soundFile in terminalOutputArray:
+        completeSoundFileString += card_voice_file_format.format(cId=sCardId, sId=soundFile) + ","
+        #print soundFile
+    completeSoundFileString = completeSoundFileString[:-1]
+    return completeSoundFileString
+
 
 
 def linkToActId(sActionSkillId, action_skill_output_string):
@@ -75,19 +94,20 @@ def buildActId(atkId, action_skill_output_string):
     action_skill_output_string += action_skill_file_format.format(AttackMasterSheet.cell(rowNumber, colNumber).value) + ", "
     return action_skill_output_string
 
-def buildExtraAnim(actionSKillId, asset_file_output_string):
-    rowNumber = ActionSkillId.index(actionSKillId) + 1
-    colNumber = ActionSkillMasterHeaders.index("atkId1") + 1
+#def buildExtraAnim(actionSKillId, asset_file_output_string):
+#    rowNumber = ActionSkillId.index(actionSKillId) + 1
+#    colNumber = ActionSkillMasterHeaders.index("atkId1") + 1
+#    rowNumber1 = allatkId.index(ActionSkillMasterSheet.cell(rowNumber, colNumber).value) + 1
+#    colNumber1 = AttackMasterHeaders.index("actId") + 1
+#    test = int(float(AttackMasterSheet.cell(rowNumber1, colNumber1).value[7:]))
+#    asset_file_output_string += action_skill_id_format.format(wId=test) + ","
+#    return asset_file_output_string
 
-    rowNumber1 = allatkId.index(ActionSkillMasterSheet.cell(rowNumber, colNumber).value) + 1
-    colNumber1 = AttackMasterHeaders.index("actId") + 1
-    test = int(float(AttackMasterSheet.cell(rowNumber1, colNumber1).value[7:]))
-    asset_file_output_string += action_skill_id_format.format(wId=test) + ","
-    return asset_file_output_string
 
-
-#Argument loop.
+#MAIN Argument loop.
+#print os.getcwd()
 for cardId in exportCardIds:
+
     asset_file_output_string = buildDirectFromCardId(cardId, asset_file_output_string)
 
     #Purpose of the +1, -1 nonsense is due to the fact that arrays start at 0, but gDocs start at 1.
@@ -95,16 +115,13 @@ for cardId in exportCardIds:
     rowNumber =  CardId.index(cardId) + 1
     colNumber1 = CardMasterHeaders.index("actionSkillId1") + 1
     colNumber2 = CardMasterHeaders.index("actionSkillId2") + 1
+
     actionSkill1 = CardMasterSheet.cell(rowNumber, colNumber1).value
-    #asset_file_output_string = buildAnimation(actionSkill1, asset_file_output_string)
     actionSkill2 = CardMasterSheet.cell(rowNumber, colNumber2).value
-    #asset_file_output_string = buildAnimation(actionSkill2, asset_file_output_string)
-
-    asset_file_output_string = buildExtraAnim(actionSkill1, asset_file_output_string)
-    asset_file_output_string = buildExtraAnim(actionSkill2, asset_file_output_string)
-
     action_skill_output_string = linkToActId(actionSkill1, action_skill_output_string)
     action_skill_output_string = linkToActId(actionSkill2, action_skill_output_string)
+
+
 
 
 asset_file_output_string = asset_file_output_string[:-1]
@@ -113,8 +130,6 @@ action_skill_output_string = action_skill_output_string[:-2]
 #print action_skill_output_string
 
 print asset_file_output_string + "|" + action_skill_output_string
-
-
 
 
 
